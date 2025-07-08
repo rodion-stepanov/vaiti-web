@@ -1,0 +1,9 @@
+# Ignore artifacts:
+build
+dist
+
+# Ignore dependencies:
+node_modules
+
+# Ignore generated files:
+/src/routeTree.gen.ts
