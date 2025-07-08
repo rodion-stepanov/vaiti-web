@@ -3,6 +3,7 @@ import { routeTree } from './routeTree.gen';
 
 // Create a new router instance
 export const router = createRouter({
+  basepath: import.meta.env.BASE_URL,
   routeTree,
   defaultPreload: 'intent',
 });
