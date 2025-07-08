@@ -1,0 +1,83 @@
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/preflight.css' layer(base);
+@import 'tailwindcss/utilities.css' layer(utilities);
+@config '../tailwind.config.js';
+
+@layer base {
+  /* Переменные светлой темы */
+  :root {
+    --background: #f9fafb;
+    --surface: #ffffff;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --border: #e5e7eb;
+    --gradient-start: #8b5cf6;
+    --gradient-end: #ec4899;
+    --accent: #a020f0;
+    --accent-hover: #a020f0;
+
+    /* shadcn mapping */
+    --foreground: var(--text-primary);
+    --card: var(--surface);
+    --card-foreground: var(--text-primary);
+    --popover: var(--surface);
+    --popover-foreground: var(--text-primary);
+    --primary: var(--text-primary);
+    --primary-foreground: var(--background);
+    --secondary: var(--border);
+    --secondary-foreground: var(--text-primary);
+    --muted: var(--border);
+    --muted-foreground: var(--text-secondary);
+    --accent-foreground: #ffffff;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --input: var(--border);
+    --ring: var(--gradient-start);
+    --radius: 0.5rem;
+  }
+
+  /* Переменные тёмной темы */
+  .dark {
+    --background: #1d212a;
+    --surface: #292f3c;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --border: #334155;
+    --gradient-start: #8b5cf6;
+    --gradient-end: #ec4899;
+    --accent: #c84bff;
+    --accent-hover: #ba3bf0;
+
+    /* shadcn mapping */
+    --foreground: var(--text-primary);
+    --card: var(--surface);
+    --card-foreground: var(--text-primary);
+    --popover: var(--surface);
+    --popover-foreground: var(--text-primary);
+    --primary: var(--text-primary);
+    --primary-foreground: var(--background);
+    --secondary: var(--border);
+    --secondary-foreground: var(--text-primary);
+    --muted: var(--border);
+    --muted-foreground: var(--text-secondary);
+    --accent-foreground: #0f172a;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --input: var(--border);
+    --ring: var(--gradient-start);
+  }
+
+  /* Общие базовые стили */
+  * {
+    border-color: var(--border);
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
+  }
+}
