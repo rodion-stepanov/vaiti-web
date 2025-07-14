@@ -20,7 +20,6 @@ export const TelegramLinker = () => {
     setIsLoading(true);
     try {
       const { data } = await api.get('/v1/telegram/link');
-      console.log('data:', data);
       setLinkingCode(data);
       toast.success('Код для привязки успешно получен!');
     } catch (error) {

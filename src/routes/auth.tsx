@@ -27,57 +27,59 @@ interface AuthFormProps {
   error: string | null;
 }
 
-const AuthForm: React.FC<AuthFormProps> = ({
-  isLogin,
-  email,
-  setEmail,
-  password,
-  setPassword,
-  handleAuth,
-  isLoading,
-  error,
-}) => (
-  <Card>
-    <CardHeader>
-      <CardTitle>{isLogin ? 'Вход' : 'Регистрация'}</CardTitle>
-      <CardDescription>
-        {isLogin ? 'Войдите в свой аккаунт' : 'Создайте новый аккаунт'}
-      </CardDescription>
-    </CardHeader>
-    <CardContent className="space-y-2">
-      <div className="space-y-1">
-        <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          type="email"
-          placeholder="test@example.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </div>
-      <div className="space-y-1">
-        <Label htmlFor="password">Пароль</Label>
-        <Input
-          id="password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
-    </CardContent>
-    <CardFooter>
-      <Button
-        className="w-full"
-        onClick={() => handleAuth(isLogin)}
-        disabled={isLoading}
-      >
-        {isLoading ? 'Загрузка...' : isLogin ? 'Войти' : 'Зарегистрироваться'}
-      </Button>
-    </CardFooter>
-    {error && (
-      <p className="text-destructive pb-4 text-center text-sm">{error}</p>
-    )}
-  </Card>
+const AuthForm: React.FC<AuthFormProps> = React.memo(
+  ({
+    isLogin,
+    email,
+    setEmail,
+    password,
+    setPassword,
+    handleAuth,
+    isLoading,
+    error,
+  }) => (
+    <Card>
+      <CardHeader>
+        <CardTitle>{isLogin ? 'Вход' : 'Регистрация'}</CardTitle>
+        <CardDescription>
+          {isLogin ? 'Войдите в свой аккаунт' : 'Создайте новый аккаунт'}
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-2">
+        <div className="space-y-1">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            placeholder="test@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div className="space-y-1">
+          <Label htmlFor="password">Пароль</Label>
+          <Input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+      </CardContent>
+      <CardFooter>
+        <Button
+          className="w-full"
+          onClick={() => handleAuth(isLogin)}
+          disabled={isLoading}
+        >
+          {isLoading ? 'Загрузка...' : isLogin ? 'Войти' : 'Зарегистрироваться'}
+        </Button>
+      </CardFooter>
+      {error && (
+        <p className="text-destructive pb-4 text-center text-sm">{error}</p>
+      )}
+    </Card>
+  ),
 );
 
 const AuthComponent: React.FC = () => {

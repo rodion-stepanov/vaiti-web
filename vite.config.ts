@@ -8,7 +8,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/',
+  base: '/vaiti-web/',
   plugins: [
     tanstackRouter({
       target: 'react',
@@ -34,8 +34,9 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/v1': {
-        target: 'http://5.35.100.75:8080',
+        target: 'https://5.35.100.75:443',
         changeOrigin: true,
+        secure: false, // Bypass certificate validation for self-signed certificates
       },
     },
   },
