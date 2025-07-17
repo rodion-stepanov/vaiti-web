@@ -14,12 +14,12 @@ import { Skeleton } from './skeleton';
 import type { Resume } from '@/stores/searchStore';
 
 // --- Keyword Filter ---
-interface KeywordFilterProps {
+interface InputFilterProps {
   value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 }
 export const KeywordFilter = React.memo(
-  ({ value, onChange }: KeywordFilterProps) => (
+  ({ value, onChange }: InputFilterProps) => (
     <div className="space-y-2">
       <Label htmlFor="text">Ключевые слова</Label>
       <Input
@@ -173,14 +173,8 @@ export const SalaryFilter = React.memo(
 );
 
 // --- Cover Letter Filter ---
-interface KeywordFilterProps {
-  value: string;
-  onChange: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => void;
-}
 export const CoverLetterFilter = React.memo(
-  ({ value, onChange }: KeywordFilterProps) => (
+  ({ value, onChange }: InputFilterProps) => (
     <div className="space-y-2">
       <Label htmlFor="coverLetter">Сопроводительное письмо</Label>
       <Textarea

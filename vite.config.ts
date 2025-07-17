@@ -37,6 +37,11 @@ export default defineConfig({
         target: 'https://5.35.100.75:443',
         changeOrigin: true,
         secure: false, // Bypass certificate validation for self-signed certificates
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq) => {
+            proxyReq.removeHeader('Origin');
+          });
+        },
       },
     },
   },
