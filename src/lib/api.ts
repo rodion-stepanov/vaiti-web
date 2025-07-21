@@ -3,10 +3,8 @@ import { useAuthStore } from '../stores/authStore';
 
 let baseURL = '/';
 if (import.meta.env.PROD) {
-  const url = new URL('https://5.35.100.75');
-  url.port = '443';
+  const url = new URL('https://5.35.100.75:443');
   baseURL = url.toString();
-  console.log('baseURL:', baseURL);
 }
 
 export const api = axios.create({

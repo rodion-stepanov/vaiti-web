@@ -89,7 +89,7 @@ interface SearchState {
   fetchSchedulers: () => Promise<void>;
   getScheduler: (id: number) => Promise<Scheduler | undefined>;
   deleteScheduler: (id: number) => Promise<void>;
-  toggleScheduler: (schedulerId: number) => void;
+  updateScheduler: (scheduler: Scheduler) => void;
 }
 
 // const testCoverLetter =
@@ -276,10 +276,10 @@ export const useSearchStore = create<SearchState>((set, get) => ({
     }
   },
 
-  toggleScheduler: (schedulerId: number) => {
+  updateScheduler: (newScheduler: Scheduler) => {
     set((state) => ({
       schedulers: state.schedulers.map((s) =>
-        s.id === schedulerId ? { ...s, enabled: !s.enabled } : s,
+        s.id === newScheduler.id ? newScheduler : s,
       ),
     }));
   },

@@ -83,7 +83,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
         selectedId={selectedResumeId}
         onSelect={setSelectedResumeId}
       />
-      <LocationFilter value={filters.area || ''} onChange={handleInputChange} />
+      <LocationFilter value={filters.area || ''} onChange={handleSelectChange('area')} />
       <ExperienceFilter
         value={filters.experience || 'noExperience'}
         onSelect={handleSelectChange('experience')}

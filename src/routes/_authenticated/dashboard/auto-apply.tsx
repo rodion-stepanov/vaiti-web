@@ -16,34 +16,42 @@ import { ChevronDown } from 'lucide-react';
 
 import { SearchFilters } from '@/components/ui/search-filters';
 import { toast } from 'sonner';
-import { useEffect } from 'react';
+import { useEffect, useOptimistic, startTransition } from 'react';
 import { api } from '@/lib/api';
 import { useSearchStore, type Scheduler } from '@/stores/searchStore';
 import { CalendarClock } from 'lucide-react';
 
 const AutoApplyComponent = () => {
+  const store = useSearchStore();
+  const [optimisticSchedulers, setOptimisticScheduler] = useOptimistic(
+    store.schedulers,
+    (state, updatedSchedulerId: number) =>
+      state.map((s) =>
+        s.id === updatedSchedulerId ? { ...s, enabled: !s.enabled } : s,
+      ),
+  );
   const {
     applyToVacancies,
     isApplying,
     applySuccessMessage,
     error,
     selectedResumeId,
-    schedulers,
     isLoadingSchedulers,
     fetchSchedulers,
     deleteScheduler,
     schedulerError,
-    toggleScheduler,
+    updateScheduler,
   } = useSearchStore();
 
   const handleToggleScheduler = async (scheduler: Scheduler) => {
+    startTransition(() => setOptimisticScheduler(scheduler.id));
     try {
-      await api.post('/v1/scheduler/auto', {
+      const { data: newScheduler } = await api.post('/v1/scheduler/auto', {
         ...scheduler.params,
         enabled: !scheduler.enabled,
         enabledSchedule: !scheduler.enabled,
       });
-      toggleScheduler(scheduler.id);
+      updateScheduler(newScheduler);
       toast.success(
         `Автоотклик ${scheduler.enabled ? 'деактивирован' : 'активирован'}`,
       );
@@ -151,7 +159,7 @@ const AutoApplyComponent = () => {
           </Button>
         </CardContent>
       </Card>
-      {schedulers.length > 0 && (
+      {optimisticSchedulers.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle>Созданные автоотклики</CardTitle>
@@ -162,7 +170,7 @@ const AutoApplyComponent = () => {
                 Загрузка расписаний...
               </p>
             ) : (
-              schedulers.map((scheduler) => (
+              optimisticSchedulers.map((scheduler) => (
                 <Collapsible
                   key={scheduler.id}
                   className="mb-2 rounded-lg border"

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState, type JSX } from 'react';
 import { Input } from './input';
 import { Label } from './label';
 import { Textarea } from './textarea';
@@ -11,12 +11,16 @@ import {
   SelectValue,
 } from './select';
 import { Skeleton } from './skeleton';
+import { ChevronRight, ChevronDown } from 'lucide-react';
 import type { Resume } from '@/stores/searchStore';
+import { getAreas, type Area } from '@/lib/hhApi';
 
 // --- Keyword Filter ---
 interface InputFilterProps {
   value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => void;
 }
 export const KeywordFilter = React.memo(
   ({ value, onChange }: InputFilterProps) => (
@@ -71,21 +75,83 @@ export const ResumeSelectFilter = React.memo(
 // --- Location Filter ---
 interface LocationFilterProps {
   value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (value: string) => void;
 }
+
 export const LocationFilter = React.memo(
-  ({ value, onChange }: LocationFilterProps) => (
-    <div className="space-y-2">
-      <Label htmlFor="area">Локация</Label>
-      <Input
-        id="area"
-        name="area"
-        value={value}
-        onChange={onChange}
-        placeholder="Например, Москва"
-      />
-    </div>
-  ),
+  ({ value, onChange }: LocationFilterProps) => {
+    const [areas, setAreas] = useState<Area[]>([]);
+    const [expandedAreas, setExpandedAreas] = useState<Set<string>>(new Set());
+
+    useEffect(() => {
+      getAreas().then(setAreas);
+    }, []);
+
+    const toggleArea = (areaId: string) => {
+      setExpandedAreas((prev) => {
+        const newSet = new Set(prev);
+        if (newSet.has(areaId)) {
+          newSet.delete(areaId);
+        } else {
+          newSet.add(areaId);
+        }
+        return newSet;
+      });
+    };
+
+    const renderAreas = (areas: Area[], depth = 0): JSX.Element[] => {
+      return areas.flatMap((area) => {
+        const hasChildren = area.areas && area.areas.length > 0;
+        const isExpanded = expandedAreas.has(area.id);
+
+        const item = (
+          <SelectItem
+            key={area.id}
+            value={area.id}
+            style={{ paddingLeft: `${depth * 1.5}rem` }}
+            className="flex items-center"
+          >
+            <div className="flex items-center">
+              {hasChildren && (
+                <button
+                  className="mr-2 h-4 w-4 text-gray-500 hover:text-gray-700"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleArea(area.id);
+                  }}
+                >
+                  {isExpanded ? (
+                    <ChevronDown className="h-4 w-4" />
+                  ) : (
+                    <ChevronRight className="h-4 w-4" />
+                  )}
+                </button>
+              )}
+              <span className={!hasChildren ? 'ml-6' : ''}>{area.name}</span>
+            </div>
+          </SelectItem>
+        );
+
+        const children =
+          hasChildren && isExpanded ? renderAreas(area.areas, depth + 1) : [];
+
+        return [item, ...children];
+      });
+    };
+
+    return (
+      <div className="space-y-2">
+        <Label htmlFor="area">Локация</Label>
+        <Select name="area" value={value} onValueChange={onChange}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Выберите регион" />
+          </SelectTrigger>
+          <SelectContent>{renderAreas(areas)}</SelectContent>
+        </Select>
+      </div>
+    );
+  },
 );
 
 // --- Experience Filter ---

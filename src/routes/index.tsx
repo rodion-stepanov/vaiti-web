@@ -24,7 +24,7 @@ const LandingComponent: React.FC = () => {
             ваше время.
           </p>
           <Button asChild size="lg">
-            <Link to="/auth">Зарегистрироваться</Link>
+            <Link to="/auth">Искать работу</Link>
           </Button>
         </section>
 

@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import React, { useState } from 'react';
 import logo from '@/assets/logo.png';
 import { useAuthStore } from '../stores/authStore';
@@ -152,5 +152,14 @@ const AuthComponent: React.FC = () => {
 };
 
 export const Route = createFileRoute('/auth')({
+  beforeLoad: async () => {
+    await useAuthStore.getState().checkAuth();
+    const { accessToken } = useAuthStore.getState();
+    if (accessToken) {
+      throw redirect({
+        to: '/dashboard',
+      });
+    }
+  },
   component: AuthComponent,
 });
