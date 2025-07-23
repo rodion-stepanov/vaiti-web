@@ -12,14 +12,39 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
-import { ChevronDown } from 'lucide-react';
 
 import { SearchFilters } from '@/components/ui/search-filters';
 import { toast } from 'sonner';
 import { useEffect, useOptimistic, startTransition } from 'react';
 import { api } from '@/lib/api';
 import { useSearchStore, type Scheduler } from '@/stores/searchStore';
-import { CalendarClock } from 'lucide-react';
+import { CalendarClock, ChevronDown } from 'lucide-react';
+
+const paramLabels: Record<string, string> = {
+  text: 'Ключевые слова',
+  area: 'Регион',
+  employment: 'Тип занятости',
+  experience: 'Опыт работы',
+  salary: 'Зарплата',
+  only_with_salary: 'Только с зарплатой',
+  keywordsToExclude: 'Исключить слова',
+  order_by: 'Сортировка',
+};
+
+const paramValueLabels: Record<string, Record<string, string>> = {
+  order_by: {
+    publication_time: 'по дате публикации',
+    relevance: 'по релевантности',
+    salary_desc: 'по убыванию зарплаты',
+    salary_asc: 'по возрастанию зарплаты',
+  },
+  experience: {
+    noExperience: 'Нет опыта',
+    between1And3: 'От 1 года до 3 лет',
+    between3And6: 'От 3 до 6 лет',
+    moreThan6: 'Более 6 лет',
+  },
+};
 
 const AutoApplyComponent = () => {
   const store = useSearchStore();
@@ -214,18 +239,50 @@ const AutoApplyComponent = () => {
                           </p>
                           <div className="mt-1 grid grid-cols-1 gap-2 text-sm md:grid-cols-2">
                             {Object.entries(scheduler.params)
-                              .filter(
-                                ([, value]) =>
+                              .filter(([key, value]) => {
+                                if (
+                                  !paramLabels[key] ||
+                                  key === 'coverLetter'
+                                ) {
+                                  return false;
+                                }
+                                if (key === 'only_with_salary') {
+                                  return value != null;
+                                }
+                                if (Array.isArray(value)) {
+                                  return value.length > 0;
+                                }
+                                return (
                                   value != null &&
                                   value !== '' &&
-                                  value !== false,
-                              )
-                              .map(([key, value]) => (
-                                <div key={key}>
-                                  <span className="font-medium">{key}: </span>
-                                  {String(value)}
-                                </div>
-                              ))}
+                                  value !== false
+                                );
+                              })
+                              .map(([key, value]) => {
+                                const label = paramLabels[key] || key;
+                                let displayValue;
+
+                                if (key === 'only_with_salary') {
+                                  displayValue = value ? 'да' : 'нет';
+                                } else if (paramValueLabels[key] && value) {
+                                  const valueStr = String(value);
+                                  displayValue =
+                                    paramValueLabels[key][valueStr] || valueStr;
+                                } else {
+                                  displayValue = Array.isArray(value)
+                                    ? value.join(', ')
+                                    : String(value);
+                                }
+
+                                return (
+                                  <div key={key}>
+                                    <span className="font-medium">
+                                      {label}:{' '}
+                                    </span>
+                                    {displayValue}
+                                  </div>
+                                );
+                              })}
                           </div>
                         </div>
                       </div>
