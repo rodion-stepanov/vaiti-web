@@ -1,122 +1,62 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import logo from '@/assets/logo.png';
 import { useAuthStore } from '../stores/authStore';
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { isApiError } from '@/lib/typeguards';
 
-interface AuthFormProps {
-  isLogin: boolean;
-  email: string;
-  setEmail: (value: string) => void;
-  password: string;
-  setPassword: (value: string) => void;
-  handleAuth: (isLogin: boolean) => void;
-  isLoading: boolean;
-  error: string | null;
+interface TelegramUserData {
+  id: number;
+  first_name: string;
+  last_name: string;
+  username: string;
+  photo_url: string;
+  auth_date: number;
+  hash: string;
 }
 
-const AuthForm: React.FC<AuthFormProps> = React.memo(
-  ({
-    isLogin,
-    email,
-    setEmail,
-    password,
-    setPassword,
-    handleAuth,
-    isLoading,
-    error,
-  }) => (
-    <Card>
-      <CardHeader>
-        <CardTitle>{isLogin ? 'Вход' : 'Регистрация'}</CardTitle>
-        <CardDescription>
-          {isLogin ? 'Войдите в свой аккаунт' : 'Создайте новый аккаунт'}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-2">
-        <div className="space-y-1">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="test@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div className="space-y-1">
-          <Label htmlFor="password">Пароль</Label>
-          <Input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-      </CardContent>
-      <CardFooter>
-        <Button
-          className="w-full"
-          onClick={() => handleAuth(isLogin)}
-          disabled={isLoading}
-        >
-          {isLoading ? 'Загрузка...' : isLogin ? 'Войти' : 'Зарегистрироваться'}
-        </Button>
-      </CardFooter>
-      {error && (
-        <p className="text-destructive pb-4 text-center text-sm">{error}</p>
-      )}
-    </Card>
-  ),
-);
-
 const AuthComponent: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { telegramLogin } = useAuthStore();
 
-  const handleAuth = async (isLogin: boolean) => {
-    setError(null);
-    setIsLoading(true);
-    try {
-      const { login, register } = useAuthStore.getState();
-      if (isLogin) {
-        await login(email, password);
-      } else {
-        await register(email, password);
+  useEffect(() => {
+    const handleTelegramAuth = async (user: TelegramUserData) => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        await telegramLogin(user);
+      } catch (e) {
+        const errorMessage = isApiError(e)
+          ? e.response.data?.message
+          : 'Ошибка авторизации';
+        setError(errorMessage);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (e) {
-      const errorMessage = isApiError(e)
-        ? e.response.data?.message
-        : 'Ошибка авторизации';
-      setError(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    };
 
-  const formProps = {
-    email,
-    setEmail,
-    password,
-    setPassword,
-    handleAuth,
-    isLoading,
-    error,
-  };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).onTelegramAuth = handleTelegramAuth;
+
+    const script = document.createElement('script');
+    script.src = 'https://telegram.org/js/telegram-widget.js?22';
+    script.async = true;
+    script.setAttribute('data-telegram-login', 'Denis_Super_bot');
+    script.setAttribute('data-size', 'large');
+    script.setAttribute('data-onauth', 'onTelegramAuth(user)');
+    script.setAttribute('data-request-access', 'write');
+
+    const authContainer = document.getElementById('telegram-auth-container');
+    authContainer?.appendChild(script);
+
+    return () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (window as any).onTelegramAuth = null;
+      if (authContainer && script.parentNode === authContainer) {
+        authContainer.removeChild(script);
+      }
+    };
+  }, [telegramLogin]);
 
   return (
     <div className="bg-background flex grow flex-col items-center justify-center p-4">
@@ -128,25 +68,18 @@ const AuthComponent: React.FC = () => {
         />
         <h1 className="mt-4 text-3xl font-bold">Добро пожаловать</h1>
         <p className="text-muted-foreground">
-          Войдите или зарегистрируйтесь, чтобы продолжить
+          Войдите через Telegram, чтобы продолжить
         </p>
       </div>
-      <Tabs defaultValue="login" className="w-full max-w-md">
-        <TabsList className="bg-gradient-brand poi grid w-full grid-cols-2">
-          <TabsTrigger className="cursor-pointer" value="login">
-            Вход
-          </TabsTrigger>
-          <TabsTrigger className="cursor-pointer" value="register">
-            Регистрация
-          </TabsTrigger>
-        </TabsList>
-        <TabsContent value="login">
-          <AuthForm isLogin={true} {...formProps} />
-        </TabsContent>
-        <TabsContent value="register">
-          <AuthForm isLogin={false} {...formProps} />
-        </TabsContent>
-      </Tabs>
+      <div
+        id="telegram-auth-container"
+        className="flex w-full max-w-md flex-col items-center"
+      >
+        {isLoading && <p>Загрузка...</p>}
+        {error && (
+          <p className="text-destructive text-center text-sm">{error}</p>
+        )}
+      </div>
     </div>
   );
 };

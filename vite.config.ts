@@ -31,7 +31,7 @@ export default defineConfig({
     // host: '5.35.100.75',
     // port: 8080,
     host: '127.0.0.1',
-    port: 5173,
+    port: 80,
     proxy: {
       '/v1': {
         target: 'https://5.35.100.75:443',

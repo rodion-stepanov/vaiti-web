@@ -12,6 +12,16 @@ interface User {
   role: string;
 }
 
+interface TelegramUserData {
+  id: number;
+  first_name: string;
+  last_name: string;
+  username: string;
+  photo_url: string;
+  auth_date: number;
+  hash: string;
+}
+
 interface AuthState {
   accessToken: string | null;
   user: User | null;
@@ -20,8 +30,7 @@ interface AuthState {
   hhState: string | null;
   setTokens: (accessToken: string) => void;
   setHhData: (code: string | null, state: string | null) => void;
-  login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string) => Promise<void>;
+  telegramLogin: (user: TelegramUserData) => Promise<void>;
   logout: () => void;
   checkAuth: () => Promise<void>;
 }
@@ -37,26 +46,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ accessToken });
   },
   setHhData: (code, state) => set({ hhCode: code, hhState: state }),
-  login: async (email: string, password: string) => {
+  telegramLogin: async (user: TelegramUserData) => {
     try {
-      const { data } = await api.post('/v1/users/login', { email, password });
+      const { data } = await api.post('/v1/telegram/auth', user);
       get().setTokens(data.accessToken);
       router.navigate({ to: '/dashboard' });
     } catch (error) {
-      console.error('Login failed', error);
-      throw error;
-    }
-  },
-  register: async (email: string, password: string) => {
-    try {
-      const { data } = await api.post('/v1/users/register', {
-        email,
-        password,
-      });
-      get().setTokens(data.accessToken);
-      router.navigate({ to: '/dashboard' });
-    } catch (error) {
-      console.error('Register failed', error);
+      console.error('Telegram login failed', error);
       throw error;
     }
   },
