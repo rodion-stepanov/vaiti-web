@@ -7,6 +7,8 @@ import {
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { HhIntegration } from '@/components/dashboard/hh-integration';
 
+const isAggregatorEnabled = false;
+
 const DashboardComponent = () => {
   const matches = useMatches();
   const activeMatch = matches[matches.length - 1];
@@ -29,8 +31,11 @@ const DashboardComponent = () => {
           <TabsTrigger value="auto-apply" asChild>
             <Link to="/dashboard/auto-apply">Автоотклик</Link>
           </TabsTrigger>
+
           <TabsTrigger value="aggregator" asChild>
-            <Link to="/dashboard/aggregator">Агрегатор</Link>
+            <Link to="/dashboard/aggregator">
+              {isAggregatorEnabled ? 'Агрегатор' : 'В разработке'}
+            </Link>
           </TabsTrigger>
         </TabsList>
       </Tabs>

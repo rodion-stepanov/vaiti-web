@@ -7,6 +7,8 @@ import { SearchFilters } from '@/components/ui/search-filters';
 import { VacancyCard } from '@/components/ui/vacancy-card';
 import { useAuthStore } from '@/stores/authStore';
 
+const isAggregatorEnabled = false;
+
 const AggregatorComponent: React.FC = () => {
   const { vacancies, isLoading, error, fetchResumes } = useSearchStore();
   const { accessToken } = useAuthStore();
@@ -16,6 +18,18 @@ const AggregatorComponent: React.FC = () => {
       fetchResumes();
     }
   }, [accessToken, fetchResumes]);
+
+  if (!isAggregatorEnabled) {
+    return (
+      <div className="p-4 flex flex-col items-center justify-center h-full text-center">
+        <h1 className="text-2xl font-bold mb-4">Функционал в разработке.</h1>
+        <p className="text-gray-600">
+          В скором времени здесь появится новый сервис, который поможет ускорить
+          ваш поиск работы!
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="grid gap-8 md:grid-cols-3">
