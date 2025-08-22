@@ -10,11 +10,7 @@ const LandingComponent: React.FC = () => {
     <div className="bg-background flex min-h-screen flex-col">
       <main className="grow">
         <section className="container mx-auto flex flex-col items-center justify-center px-4 py-20 text-center">
-          <img
-            src={logo}
-            alt="Вайти Лого"
-            className="mb-8 h-32 w-32 rounded-4xl"
-          />
+          <img src={logo} alt="Вайти Лого" className="mb-8 w-3/5 min-w-48" />
           <h1 className="text-foreground mb-6 text-5xl font-extrabold tracking-tight md:text-6xl">
             Автоматизируйте поиск работы на hh.ru
           </h1>

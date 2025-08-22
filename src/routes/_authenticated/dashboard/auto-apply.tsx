@@ -176,7 +176,7 @@ const AutoApplyComponent = () => {
             {isApplying ? 'Откликаемся...' : 'Откликнуться'}
           </Button>
           <Button
-            className="ml-12 w-full md:w-auto"
+            className="w-full md:ml-12 md:w-auto"
             onClick={handleCreateScheduler}
             disabled={isApplying || !selectedResumeId}
           >

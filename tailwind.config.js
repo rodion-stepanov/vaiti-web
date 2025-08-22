@@ -50,12 +50,13 @@ export default {
           DEFAULT: 'var(--card)',
           foreground: 'var(--card-foreground)',
         },
+        'primary-btn': 'var(--primary-btn)',
         'text-primary': 'var(--text-primary)',
         'text-secondary': 'var(--text-secondary)',
         'gradient-start': 'var(--gradient-start)',
         'gradient-end': 'var(--gradient-end)',
-        'brand-purple': '#8B5CF6',
-        'brand-pink': '#EC4899',
+        'brand-purple': '#575AFF',
+        'brand-pink': '#dd18ff',
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -77,9 +78,7 @@ export default {
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
       backgroundImage: {
-        'gradient-accent':
-          'linear-gradient(to right, var(--gradient-start), var(--gradient-end))',
-        'gradient-brand': 'linear-gradient(to bottom right, #8B5CF6, #EC4899)',
+        'gradient-brand': 'linear-gradient(to bottom right, #575AFF, #575AFF)',
       },
     },
   },

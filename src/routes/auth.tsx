@@ -61,11 +61,7 @@ const AuthComponent: React.FC = () => {
   return (
     <div className="bg-background flex grow flex-col items-center justify-center p-4">
       <div className="mb-8 text-center">
-        <img
-          src={logo}
-          alt="Вайти Лого"
-          className="mx-auto h-32 w-32 rounded-4xl"
-        />
+        <img src={logo} alt="Вайти Лого" className="mx-auto w-3/5 min-w-48" />
         <h1 className="mt-4 text-3xl font-bold">Добро пожаловать</h1>
         <p className="text-muted-foreground">
           Войдите через Telegram, чтобы продолжить

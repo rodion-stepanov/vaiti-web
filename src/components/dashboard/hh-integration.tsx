@@ -24,7 +24,8 @@ export const HhIntegration: React.FC = () => {
     queryKey: ['hhIntegrationStatus'],
     queryFn: async () => {
       try {
-        return await api.post('/v1/hh_ru/is_token', {});
+        const response = await api.post('/v1/hh_ru/is_token', {});
+        return response.data;
       } catch (error) {
         console.error(error);
         return false;

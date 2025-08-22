@@ -4,6 +4,9 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { Toaster } from '@/components/ui/sonner';
 import { useAuthStore } from '@/stores/authStore';
 import { Button } from '@/components/ui/button';
+//TODO: change to svg files
+import logoLight from '@/assets/logo-sign-light.png';
+import logoDark from '@/assets/logo-sign-dark.png';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,7 +24,14 @@ const RootComponent = () => {
   return (
     <div className="bg-background relative flex min-h-screen flex-col bg-fixed">
       <header className="container mx-auto flex items-center justify-between px-4 py-6">
-        <h2 className="text-primary text-2xl font-bold">Вайти</h2>
+        <Link to="/" className="flex items-center">
+          <img src={logoLight} alt="Вайти" className="h-8 w-auto dark:hidden" />
+          <img
+            src={logoDark}
+            alt="Вайти"
+            className="hidden h-8 w-auto dark:block"
+          />
+        </Link>
         <div className="flex items-center gap-4">
           {isAuthCheckComplete ? (
             user ? (

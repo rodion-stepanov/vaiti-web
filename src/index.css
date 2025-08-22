@@ -1,8 +1,11 @@
 @layer theme, base, components, utilities;
+
 @import 'tailwindcss/theme.css' layer(theme);
 @import 'tailwindcss/preflight.css' layer(base);
 @import 'tailwindcss/utilities.css' layer(utilities);
 @config '../tailwind.config.js';
+
+/* #575aff */
 
 @layer base {
   /* Переменные светлой темы */
@@ -10,9 +13,10 @@
     --background: #f9fafb;
     --surface: #ffffff;
     --text-primary: #111827;
+    --primary-btn: #ffffff;
     --text-secondary: #6b7280;
     --border: #e5e7eb;
-    --gradient-start: #8b5cf6;
+    --gradient-start: #575aff;
     --gradient-end: #ec4899;
     --accent: #a020f0;
     --accent-hover: #a020f0;
@@ -42,10 +46,11 @@
     --background: #1d212a;
     --surface: #292f3c;
     --text-primary: #f1f5f9;
+    --primary-btn: #ffffff;
     --text-secondary: #94a3b8;
     --border: #334155;
-    --gradient-start: #8b5cf6;
-    --gradient-end: #ec4899;
+    --gradient-start: #575aff;
+    --gradient-end: #dd18ff;
     --accent: #c84bff;
     --accent-hover: #ba3bf0;
 
